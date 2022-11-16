@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<ruleset name="Conductor">
+	<description>Conductor Coding Standard</description>
+
+	<config name="testVersion" value="8.0-8.2" />
+
+	<!-- PHPCompatibility Standards -->
+	<rule ref="PHPCompatibility" />
+
+	<!-- ShineUnited Standards -->
+	<rule ref="ShineUnited" />
+	<rule ref="ShineUnited-RequireStrictTypes" />
+	<rule ref="ShineUnited-RequireTypeHints" />
+	<rule ref="ShineUnited-RequireComments" />
+
+	<file>src/</file>
+</ruleset>
