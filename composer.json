@@ -19,6 +19,11 @@
 			"ShineUnited\\Conductor\\": "src/"
 		}
 	},
+	"autoload-dev": {
+		"psr-4": {
+			"ShineUnited\\Conductor\\Test\\": "src/"
+		}
+	},
 	"extra": {
 		"class": "ShineUnited\\Conductor\\Plugin"
 	},
