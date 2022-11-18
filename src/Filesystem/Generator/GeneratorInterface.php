@@ -24,13 +24,13 @@ use Composer\IO\IOInterface;
 interface GeneratorInterface {
 
 	/**
-	 * Checks if the blueprint type is handled by this generator.
+	 * Checks if the blueprint is handled by this generator.
 	 *
-	 * @param string $type Type blueprint type to check.
+	 * @param BlueprintInterface $blueprint Blueprint object to check.
 	 *
-	 * @return boolean True if this generator handles the type checked.
+	 * @return boolean True if this generator handles the supplied blueprint.
 	 */
-	public function handlesType(string $type): bool;
+	public function handlesBlueprint(BlueprintInterface $blueprint): bool;
 
 	/**
 	 * Generates the file contents from the provided blueprint.

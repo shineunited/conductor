@@ -22,7 +22,6 @@ use Symfony\Component\Filesystem\Path;
  * Base class for blueprints
  */
 abstract class BaseBlueprint implements BlueprintInterface {
-	private string $type;
 	private mixed $path;
 	private string $allowCreate;
 	private string $allowUpdate;
@@ -34,13 +33,11 @@ abstract class BaseBlueprint implements BlueprintInterface {
 	/**
 	 * Initializes the blueprint.
 	 *
-	 * @param string          $type        Type name.
 	 * @param string|callable $path        Output path.
 	 * @param string          $allowCreate Create limits, should be always|ask|never.
 	 * @param string          $allowUpdate Update limits, should be always|ask|never.
 	 */
-	public function __construct(string $type, string|callable $path, ?string $allowCreate = null, ?string $allowUpdate = null) {
-		$this->type = $type;
+	public function __construct(string|callable $path, ?string $allowCreate = null, ?string $allowUpdate = null) {
 		$this->path = $path;
 
 		$this->allowCreate = self::ALWAYS;
@@ -52,13 +49,6 @@ abstract class BaseBlueprint implements BlueprintInterface {
 		if (!is_null($allowUpdate)) {
 			$this->allowUpdate = $allowUpdate;
 		}
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getType(): string {
-		return $this->type;
 	}
 
 	/**
