@@ -87,11 +87,9 @@ class Filesystem {
 					throw new \Exception('Path already exists: ' . $path);
 				}
 
-				$type = $blueprint->getType();
-
 				// find provider
 				foreach ($generators as $generator) {
-					if ($generator->handlesType($type)) {
+					if ($generator->handlesBlueprint($blueprint)) {
 						$file = new File($path);
 						$contents = $generator->generateContents($blueprint, $file, $this->config);
 
