@@ -20,18 +20,15 @@ use ShineUnited\Conductor\Configuration\Configuration;
 use Composer\IO\IOInterface;
 
 /**
- * Simple file generator implementation, handles 'file' type
+ * Simple file generator implementation, handles FileBlueprintInterface
  */
 class FileGenerator implements GeneratorInterface {
-	public const TYPE = 'file';
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public function handlesType(string $type): bool {
-		$type = strtolower(trim($type));
-
-		if ($type == self::TYPE) {
+	public function handlesBlueprint(BlueprintInterface $blueprint): bool {
+		if ($blueprint instanceof FileBlueprintInterface) {
 			return true;
 		}
 

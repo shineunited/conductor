@@ -23,13 +23,6 @@ use Composer\IO\IOInterface;
 interface BlueprintInterface {
 
 	/**
-	 * Get the type of the blueprint.
-	 *
-	 * @return string The type name.
-	 */
-	public function getType(): string;
-
-	/**
 	 * Get the output path of the blueprint.
 	 *
 	 * @return string|callable The output path, expects to be processed.
