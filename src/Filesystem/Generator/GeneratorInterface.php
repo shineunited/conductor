@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace ShineUnited\Conductor\Filesystem\Generator;
 
+use ShineUnited\Conductor\Exception\Filesystem\InvalidBlueprintException;
 use ShineUnited\Conductor\Filesystem\File;
 use ShineUnited\Conductor\Filesystem\Blueprint\BlueprintInterface;
 use ShineUnited\Conductor\Configuration\Configuration;
@@ -38,6 +39,8 @@ interface GeneratorInterface {
 	 * @param BlueprintInterface $blueprint The blueprint to generate.
 	 * @param File               $file      The current file.
 	 * @param Configuration      $config    Conductor config.
+	 *
+	 * @throws InvalidBlueprintException If unhandled blueprint is provided.
 	 *
 	 * @return string The generated file contents.
 	 */

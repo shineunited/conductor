@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace ShineUnited\Conductor\Configuration\Parameter;
 
 use ShineUnited\Conductor\Configuration\Configuration;
+use ShineUnited\Conductor\Exception\Configuration\ValidationException;
 
 /**
  * Parameter Interface
@@ -58,6 +59,8 @@ interface ParameterInterface {
 	 *
 	 * @param mixed         $value  The value to validate.
 	 * @param Configuration $config Conductor configuration.
+	 *
+	 * @throws ValidationException For invalid values.
 	 *
 	 * @return void
 	 */

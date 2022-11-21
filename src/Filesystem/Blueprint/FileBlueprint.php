@@ -20,6 +20,7 @@ class FileBlueprint extends BaseBlueprint implements FileBlueprintInterface {
 	private mixed $contents;
 
 	/**
+	 * @param string|callable $path        Output path.
 	 * @param string|callable $contents    File contents.
 	 * @param string          $allowCreate Expects always|ask|never.
 	 * @param string          $allowUpdate Expects always|ask|never.

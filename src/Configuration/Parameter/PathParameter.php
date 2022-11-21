@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace ShineUnited\Conductor\Configuration\Parameter;
 
 use ShineUnited\Conductor\Configuration\Configuration;
+use ShineUnited\Conductor\Exception\Configuration\ValidationException;
 use Symfony\Component\Filesystem\Path;
 
 /**
@@ -31,7 +32,7 @@ class PathParameter extends BaseParameter {
 	/**
 	 * {@inheritDoc}
 	 *
-	 * @throws \Exception For invalid values.
+	 * @throws ValidationException If value is invalid.
 	 */
 	public function validateValue(mixed $value, Configuration $config): void {
 		$path = $this->convertToAbsolutePath($value);
@@ -46,11 +47,11 @@ class PathParameter extends BaseParameter {
 
 		foreach ($insideDirs as $insideDir) {
 			if (!is_string($insideDir)) {
-				throw new \Exception('Inside paths must be strings');
+				throw new ValidationException($this, 'Inside paths must be strings');
 			}
 
 			if ($this->isOutsideDirectory($path, $insideDir)) {
-				throw new \Exception('Path must be inside ' . $insideDir);
+				throw new ValidationException($this, 'Path must be inside ' . $insideDir);
 			}
 		}
 
@@ -64,11 +65,11 @@ class PathParameter extends BaseParameter {
 
 		foreach ($outsideDirs as $outsideDir) {
 			if (!is_string($outsideDir)) {
-				throw new \Exception('Outside paths must be strings');
+				throw new ValidationException($this, 'Outside paths must be strings');
 			}
 
 			if ($this->isInsideDirectory($path, $outsideDir)) {
-				throw new \Exception('Path must be outside ' . $outsideDir);
+				throw new ValidationException($this, 'Path must be outside ' . $outsideDir);
 			}
 		}
 	}

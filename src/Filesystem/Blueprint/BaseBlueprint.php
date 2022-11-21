@@ -75,7 +75,8 @@ abstract class BaseBlueprint implements BlueprintInterface {
 	private function checkAllow(string $name, File $file, IOInterface $io): bool {
 		$name = strtolower(trim($name));
 		if (!in_array($name, ['create', 'update'])) {
-			throw new \Exception('Unknown allow setting: ' . $name);
+			// unknown method check
+			return false;
 		}
 
 		$method = $this->allowCreate;
@@ -84,9 +85,6 @@ abstract class BaseBlueprint implements BlueprintInterface {
 		}
 
 		$method = strtolower(trim($method));
-		if (!in_array($method, [self::ALWAYS, self::NEVER, self::ASK])) {
-			throw new \Exception('Unknown allow method: ' . $method);
-		}
 
 		if ($method == self::ALWAYS) {
 			return true;

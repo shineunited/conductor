@@ -15,6 +15,9 @@ namespace ShineUnited\Conductor\Filesystem;
 
 use ShineUnited\Conductor\Capability\GeneratorProvider as GeneratorProviderCapability;
 use ShineUnited\Conductor\Capability\BlueprintProvider as BlueprintProviderCapability;
+use ShineUnited\Conductor\Exception\Filesystem\DuplicatePathException;
+use ShineUnited\Conductor\Exception\Filesystem\InvalidBlueprintException;
+use ShineUnited\Conductor\Exception\Filesystem\InvalidGeneratorException;
 use ShineUnited\Conductor\Filesystem\Generator\GeneratorInterface;
 use ShineUnited\Conductor\Filesystem\Blueprint\BlueprintInterface;
 use ShineUnited\Conductor\Configuration\Configuration;
@@ -48,7 +51,9 @@ class Filesystem {
 	 *
 	 * @return void
 	 *
-	 * @throws \Exception Various failures.
+	 * @throws DuplicatePathException    When blueprint paths overlap.
+	 * @throws InvalidBlueprintException If an invalid blueprint is provided.
+	 * @throws InvalidGeneratorException If an invalid generator is provided.
 	 */
 	public function generateFiles(): void {
 		$pluginManager = $this->composer->getPluginManager();
@@ -62,7 +67,7 @@ class Filesystem {
 		foreach ($generatorProviders as $provider) {
 			foreach ($provider->getGenerators() as $generator) {
 				if (!$generator instanceof GeneratorInterface) {
-					throw new \Exception('Invalid file generator: ' . get_class($generator));
+					throw new InvalidGeneratorException($generator);
 				}
 
 				$generators[] = $generator;
@@ -78,13 +83,13 @@ class Filesystem {
 		foreach ($blueprintProviders as $provider) {
 			foreach ($provider->getBlueprints() as $blueprint) {
 				if (!$blueprint instanceof BlueprintInterface) {
-					throw new \Exception('Invalid file blueprint: ' . get_class($blueprint));
+					throw new InvalidBlueprintException($blueprint);
 				}
 
 				$path = $this->config->processValue($blueprint->getPath());
 
 				if (isset($files[$path])) {
-					throw new \Exception('Path already exists: ' . $path);
+					throw new DuplicatePathException($path);
 				}
 
 				// find provider
