@@ -12,11 +12,17 @@
 		"phpcompatibility/php-compatibility": "^9.3",
 		"shineunited/coding-standard": "^1.0",
 		"phpstan/phpstan": "^1.9",
-		"composer/composer": "^2.4"
+		"composer/composer": "^2.4",
+		"phpunit/phpunit": "^9.5"
 	},
 	"autoload": {
 		"psr-4": {
 			"ShineUnited\\Conductor\\": "src/"
+		}
+	},
+	"autoload-dev": {
+		"psr-4": {
+			"ShineUnited\\Conductor\\Tests\\": "tests/"
 		}
 	},
 	"extra": {
@@ -30,6 +36,7 @@
 	"scripts": {
 		"phpcs": "phpcs -ps --runtime-set ignore_errors_on_exit 1 --runtime-set ignore_warnings_on_exit 1",
 		"phpcbf": "phpcbf -p --runtime-set ignore_errors_on_exit 1 --runtime-set ignore_warnings_on_exit 1",
-		"phpstan": "phpstan analyse"
+		"phpstan": "phpstan analyse",
+		"phpunit": "phpunit --do-not-cache-result"
 	}
 }
