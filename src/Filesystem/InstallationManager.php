@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace ShineUnited\Conductor\Filesystem;
 
 use ShineUnited\Conductor\Capability\InstallerProvider as InstallerProviderCapability;
+use ShineUnited\Conductor\Exception\Filesystem\InvalidInstallerException;
 use ShineUnited\Conductor\Filesystem\Installer\InstallerInterface;
 use ShineUnited\Conductor\Configuration\Configuration;
 use Composer\Composer;
@@ -106,7 +107,7 @@ class InstallationManager extends LibraryInstaller {
 
 			foreach ($installerProvider->getInstallers() as $installer) {
 				if (!$installer instanceof InstallerInterface) {
-					throw new \Exception('Invalid installer');
+					throw new InvalidInstallerException($installer);
 				}
 
 				foreach ($installer->getSupportedTypes() as $type) {
@@ -120,7 +121,7 @@ class InstallationManager extends LibraryInstaller {
 					$this->installers[$type] = $installer;
 
 					if (in_array($type, $this->ignoredTypes)) {
-						throw new \Exception('Previously ignored type: ' . $type . ' is now supported, check install order...');
+						// a previously ignored type is now supported, this may be an install order issue...
 					}
 				}
 			}

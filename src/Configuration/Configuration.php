@@ -16,14 +16,26 @@ namespace ShineUnited\Conductor\Configuration;
 use ShineUnited\Conductor\Capability\ParameterProvider as ParameterProviderCapability;
 use ShineUnited\Conductor\Configuration\Parameter\ParameterInterface;
 use ShineUnited\Conductor\Configuration\Parameter\PathParameter;
+use ShineUnited\Conductor\Exception\Configuration\InvalidPackageExtraException;
+use ShineUnited\Conductor\Exception\Configuration\InvalidParameterException;
+use ShineUnited\Conductor\Exception\Configuration\InvalidReflectionArgumentException;
+use ShineUnited\Conductor\Exception\Configuration\InvalidReflectionFunctionException;
+use ShineUnited\Conductor\Exception\Configuration\UnknownParameterException;
 use Composer\Composer;
 use Composer\IO\IOInterface;
 use Composer\Plugin\Capable;
+use ArrayAccess;
+use Closure;
+use ReflectionFunction;
+use ReflectionFunctionAbstract;
+use ReflectionMethod;
+use ReflectionNamedType;
+use ReflectionParameter;
 
 /**
  * Conductor Configuration
  */
-class Configuration implements \ArrayAccess {
+class Configuration implements ArrayAccess {
 	private Composer $composer;
 	private IOInterface $io;
 
@@ -48,12 +60,6 @@ class Configuration implements \ArrayAccess {
 		$this->loadParameters(true);
 	}
 
-	/**
-	 * @param mixed[] $values
-	 *
-	 * @throws \Exception On duplicate key.
-	 * @throws \InvalidArgumentException For invalid type.
-	 */
 	private function importPackageExtra(array $values, ?string $namespace = null): void {
 		$prefix = '';
 		if (!is_null($namespace)) {
@@ -69,8 +75,8 @@ class Configuration implements \ArrayAccess {
 			$fullname = $prefix . strtolower(trim($name));
 
 			if (isset($this->packageExtra[$fullname])) {
-				// the only way this happens is due to array keys being case sensitive
-				throw new \Exception('Duplicate key for ' . $fullname);
+				// the only way this happens is due to array keys being case sensitive, skip
+				throw new InvalidPackageExtraException('Duplicate key for ' . $fullname);
 			}
 
 			if (is_array($value)) {
@@ -83,7 +89,7 @@ class Configuration implements \ArrayAccess {
 				continue;
 			}
 
-			throw new \InvalidArgumentException('Invalid type for "' . $fullname . '": ' . gettype($value));
+			throw new InvalidPackageExtraException('Invalid type for "' . $fullname . '": ' . gettype($value));
 		}
 	}
 
@@ -123,7 +129,7 @@ class Configuration implements \ArrayAccess {
 
 			foreach ($parameterProvider->getParameters() as $parameter) {
 				if (!$parameter instanceof ParameterInterface) {
-					throw new \InvalidArgumentException('Invalid Parameter: ' . $parameter->getName());
+					throw new InvalidParameterException($parameter);
 				}
 
 				$newParameters[] = $parameter;
@@ -242,40 +248,47 @@ class Configuration implements \ArrayAccess {
 		return call_user_func_array($callable, $reflectionArguments);
 	}
 
-	private function getCallableReflectionFunction(callable $callable): \ReflectionFunctionAbstract {
+	/**
+	 * @param callable $callable The callable to build reflection function for.
+	 *
+	 * @throws InvalidReflectionFunctionException If callable is invalid reflection type.
+	 *
+	 * @return ReflectionFunctionAbstract
+	 */
+	private function getCallableReflectionFunction(callable $callable): ReflectionFunctionAbstract {
 		if (is_array($callable)) {
-			return new \ReflectionMethod($callable[0], $callable[1]);
+			return new ReflectionMethod($callable[0], $callable[1]);
 		}
 
-		if ($callable instanceof \Closure) {
+		if ($callable instanceof Closure) {
 			// closure
-			return new \ReflectionFunction($callable);
+			return new ReflectionFunction($callable);
 		}
 
 		if (is_object($callable)) {
-			return new \ReflectionMethod($callable, '__invoke');
+			return new ReflectionMethod($callable, '__invoke');
 		}
 
 		if (is_string($callable)) {
 			// either global function or static (class::method)
 			$parts = explode('::', $callable);
 			if (count($parts) > 1) {
-				return new \ReflectionMethod($parts[0], $parts[1]);
+				return new ReflectionMethod($parts[0], $parts[1]);
 			} else {
-				return new \ReflectionFunction($callable);
+				return new ReflectionFunction($callable);
 			}
 		}
 
-		throw new \Exception('Unknown callable type');
+		throw new InvalidReflectionFunctionException('Unknown callable type');
 	}
 
 	/**
-	 * @param \ReflectionParameter $parameter Reflection parameter object.
-	 * @param mixed[]              $arguments Additional arguments to use.
+	 * @param ReflectionParameter $parameter Reflection parameter object.
+	 * @param mixed[]             $arguments Additional arguments to use.
 	 *
-	 * @throws \Exception For unknown parameter.
+	 * @throws InvalidReflectionArgumentException For unknown parameter.
 	 */
-	private function getReflectionArgument(\ReflectionParameter $parameter, array $arguments = []): mixed {
+	private function getReflectionArgument(ReflectionParameter $parameter, array $arguments = []): mixed {
 		$type = $parameter->getType();
 
 		$objects = [
@@ -298,7 +311,7 @@ class Configuration implements \ArrayAccess {
 			$this->composer->getPluginManager(),
 		];
 
-		if ($type instanceof \ReflectionNamedType && class_exists($type->getName())) {
+		if ($type instanceof ReflectionNamedType && class_exists($type->getName())) {
 			$classname = $type->getName();
 			foreach ($objects as $object) {
 				if ($object instanceof $classname) {
@@ -315,7 +328,7 @@ class Configuration implements \ArrayAccess {
 			return $parameter->getDefaultValue();
 		}
 
-		throw new \Exception('Unknown parameter: ' . $parameter->getName());
+		throw new InvalidReflectionArgumentException('Unknown parameter: ' . $parameter->getName());
 	}
 
 	/**
@@ -344,14 +357,14 @@ class Configuration implements \ArrayAccess {
 	 *
 	 * @param string $name The name of the parameter.
 	 *
-	 * @throws \Exception If parameter does not exist.
+	 * @throws UnknownParameterException If parameter does not exist.
 	 *
 	 * @return mixed The parameter value.
 	 */
 	protected function getParameter(string $name): mixed {
 		$name = strtolower(trim($name));
 		if (!$this->hasParameter($name)) {
-			throw new \Exception('Unknown parameter: ' . $name);
+			throw new UnknownParameterException('Unknown parameter: ' . $name);
 		}
 
 		return $this->parameters[$name];

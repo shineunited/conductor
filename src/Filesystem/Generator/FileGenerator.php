@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace ShineUnited\Conductor\Filesystem\Generator;
 
+use ShineUnited\Conductor\Exception\Filesystem\InvalidBlueprintException;
 use ShineUnited\Conductor\Filesystem\File;
 use ShineUnited\Conductor\Filesystem\Blueprint\BlueprintInterface;
 use ShineUnited\Conductor\Filesystem\Blueprint\FileBlueprintInterface;
@@ -38,11 +39,11 @@ class FileGenerator implements GeneratorInterface {
 	/**
 	 * {@inheritDoc}
 	 *
-	 * @throws \Exception
+	 * @throws InvalidBlueprintException If blueprint is NOT a file blueprint.
 	 */
 	public function generateContents(BlueprintInterface $blueprint, File $file, Configuration $config): string {
 		if (!$blueprint instanceof FileBlueprintInterface) {
-			throw new \Exception('Invalid ' . FileBlueprintInterface::class);
+			throw new InvalidBlueprintException($blueprint, FileBlueprintInterface::class);
 		}
 
 		return $config->processValue($blueprint->getContents());

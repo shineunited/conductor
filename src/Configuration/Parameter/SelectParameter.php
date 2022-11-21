@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace ShineUnited\Conductor\Configuration\Parameter;
 
 use ShineUnited\Conductor\Configuration\Configuration;
+use ShineUnited\Conductor\Exception\Configuration\ValidationException;
 
 /**
  * Select Parameter
@@ -30,7 +31,7 @@ class SelectParameter extends BaseParameter {
 	/**
 	 * {@inheritDoc}
 	 *
-	 * @throws \InvalidArgumentException If selected option is not valid.
+	 * @throws ValidationException If value is invalid.
 	 */
 	public function validateValue(mixed $value, Configuration $config): void {
 		$options = [];
@@ -39,7 +40,7 @@ class SelectParameter extends BaseParameter {
 		}
 
 		if (!in_array($value, $options)) {
-			throw new \InvalidArgumentException('Invalid option');
+			throw new ValidationException($this, 'Invalid option: ' . $value);
 		}
 	}
 }
