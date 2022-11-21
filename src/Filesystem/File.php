@@ -68,6 +68,19 @@ class File {
 	}
 
 	/**
+	 * Check if the file already exists.
+	 *
+	 * @return boolean True if the file already exists.
+	 */
+	public function alreadyExists(): bool {
+		if (file_exists($this->getFullpath())) {
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
 	 * Get the contents of the file.
 	 *
 	 * @return string The current contents of the file.
@@ -82,19 +95,6 @@ class File {
 		}
 
 		return $this->contents;
-	}
-
-	/**
-	 * Check if the file already exists.
-	 *
-	 * @return boolean True if the file already exists.
-	 */
-	public function alreadyExists(): bool {
-		if (file_exists($this->getFullpath())) {
-			return true;
-		}
-
-		return false;
 	}
 
 	/**
