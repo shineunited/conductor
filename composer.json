@@ -22,7 +22,7 @@
 	},
 	"autoload-dev": {
 		"psr-4": {
-			"ShineUnited\\Conductor\\Test\\": "src/"
+			"ShineUnited\\Conductor\\Tests\\": "tests/"
 		}
 	},
 	"extra": {
@@ -36,6 +36,7 @@
 	"scripts": {
 		"phpcs": "phpcs -ps --runtime-set ignore_errors_on_exit 1 --runtime-set ignore_warnings_on_exit 1",
 		"phpcbf": "phpcbf -p --runtime-set ignore_errors_on_exit 1 --runtime-set ignore_warnings_on_exit 1",
-		"phpstan": "phpstan analyse"
+		"phpstan": "phpstan analyse",
+		"phpunit": "phpunit --do-not-cache-result"
 	}
 }

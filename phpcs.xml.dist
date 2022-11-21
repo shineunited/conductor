@@ -2,7 +2,7 @@
 <ruleset name="Conductor">
 	<description>Conductor Coding Standard</description>
 
-	<config name="testVersion" value="8.0-8.2" />
+	<config name="testVersion" value="8.0-" />
 
 	<!-- PHPCompatibility Standards -->
 	<rule ref="PHPCompatibility" />
@@ -14,4 +14,5 @@
 	<rule ref="ShineUnited-RequireComments" />
 
 	<file>src/</file>
+	<file>tests/</file>
 </ruleset>

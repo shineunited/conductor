@@ -10,7 +10,7 @@
 	</coverage>
 	<testsuites>
 		<testsuite name="Conductor Test Suite">
-			<directory>tests/Conductor</directory>
+			<directory>tests</directory>
 		</testsuite>
 	</testsuites>
 </phpunit>
