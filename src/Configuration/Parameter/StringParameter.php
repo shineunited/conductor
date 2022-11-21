@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace ShineUnited\Conductor\Configuration\Parameter;
 
+use ShineUnited\Conductor\Exception\Configuration\ValidationException;
 use ShineUnited\Conductor\Configuration\Configuration;
 
 /**
@@ -30,11 +31,11 @@ class StringParameter extends BaseParameter {
 	/**
 	 * {@inheritDoc}
 	 *
-	 * @throws \InvalidArgumentException If type is invalid.
+	 * @throws ValidationException If value is invalid.
 	 */
 	public function validateValue(mixed $value, Configuration $config): void {
 		if (is_array($value) || is_object($value) && !method_exists($value, '__toString')) {
-			throw new \InvalidArgumentException('Invalid Type');
+			throw new ValidationException($this, 'Invalid string');
 		}
 	}
 }

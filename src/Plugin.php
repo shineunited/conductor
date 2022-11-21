@@ -39,10 +39,11 @@ class Plugin implements PluginInterface, EventSubscriberInterface {
 	public function activate(Composer $composer, IOInterface $io): void {
 		$this->composer = $composer;
 		$this->io = $io;
-		$this->configuration = new Configuration($composer, $io);
+		$this->configuration = $this->createConfiguration($composer, $io);
 
-		$installationManager = $composer->getInstallationManager();
-		$installationManager->addInstaller(new InstallationManager($io, $composer, $this->configuration));
+		$installationManager = $this->createInstallationManager($io, $composer, $this->configuration);
+		$composerInstallationManager = $composer->getInstallationManager();
+		$composerInstallationManager->addInstaller($installationManager);
 	}
 
 	/**
@@ -69,6 +70,40 @@ class Plugin implements PluginInterface, EventSubscriberInterface {
 	}
 
 	/**
+	 * Creates a configuration object.
+	 *
+	 * @param Composer    $composer Composer object.
+	 * @param IOInterface $io       IO interface object.
+	 *
+	 * @return Configuration The configuration object.
+	 */
+	protected function createConfiguration(Composer $composer, IOInterface $io): Configuration {
+		return new Configuration($composer, $io);
+	}
+
+	/**
+	 * Creates an installation manager object.
+	 *
+	 * @param IOInterface   $io            IO interface object.
+	 * @param Composer      $composer      Composer object.
+	 * @param Configuration $configuration Conductor configuration.
+	 *
+	 * @return InstallationManager The installation manager object.
+	 */
+	protected function createInstallationManager(IOInterface $io, Composer $composer, Configuration $configuration): InstallationManager {
+		return new InstallationManager($io, $composer, $configuration);
+	}
+
+	/**
+	 * Creates a filesystem object, plugin must be activated.
+	 *
+	 * @return Filesystem The filesystem object.
+	 */
+	protected function createFilesystem(): Filesystem {
+		return new Filesystem($this->composer, $this->io, $this->configuration);
+	}
+
+	/**
 	 * Post autoload dump event handler.
 	 *
 	 * @param ScriptEvent $event Composer script event.
@@ -76,7 +111,7 @@ class Plugin implements PluginInterface, EventSubscriberInterface {
 	 * @return void
 	 */
 	public function generateFiles(ScriptEvent $event): void {
-		$filesystem = new Filesystem($this->composer, $this->io, $this->configuration);
+		$filesystem = $this->createFilesystem();
 		$filesystem->generateFiles();
 	}
 }

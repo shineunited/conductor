@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace ShineUnited\Conductor\Configuration\Parameter;
 
+use ShineUnited\Conductor\Exception\Configuration\ValidationException;
 use ShineUnited\Conductor\Configuration\Configuration;
 
 /**
@@ -35,7 +36,7 @@ abstract class FilterParameter extends BaseParameter {
 	/**
 	 * {@inheritDoc}
 	 *
-	 * @throws \Exception If value is invalid.
+	 * @throws ValidationException If value is invalid.
 	 */
 	public function validateValue(mixed $value, Configuration $config): void {
 		$filter = $this->getValidateFilter($config);
@@ -47,7 +48,7 @@ abstract class FilterParameter extends BaseParameter {
 		]);
 
 		if (is_null($test)) {
-			throw new \Exception('Invalid Value');
+			throw new ValidationException($this, 'Invalid value');
 		}
 	}
 

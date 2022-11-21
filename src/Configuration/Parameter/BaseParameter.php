@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace ShineUnited\Conductor\Configuration\Parameter;
 
+use ShineUnited\Conductor\Exception\Configuration\UnknownOptionException;
 use ShineUnited\Conductor\Configuration\Configuration;
 
 /**
@@ -83,14 +84,14 @@ abstract class BaseParameter implements ParameterInterface {
 	 * @param string        $name   The option name.
 	 * @param Configuration $config Conductor configuration.
 	 *
-	 * @throws \Exception If specified option does not exist.
+	 * @throws UnknownOptionException If specified option does not exist.
 	 *
 	 * @return mixed The requested option value.
 	 */
 	protected function getOption(string $name, Configuration $config): mixed {
 		$name = strtolower(trim($name));
 		if (!$this->hasOption($name, $config)) {
-			throw new \Exception('Unknown option: ' . $name);
+			throw new UnknownOptionException('Unknown option: ' . $name);
 		}
 
 		return $config->processValue($this->options[$name]);
