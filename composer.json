@@ -2,6 +2,10 @@
 	"name": "shineunited/conductor",
 	"type": "composer-plugin",
 	"license": "MIT",
+	"description": "Composer plugin for more complete installation management.",
+	"keywords": [
+		"composer"
+	],
 	"require": {
 		"php": ">=8.0",
 		"composer-plugin-api": "^2.0",
