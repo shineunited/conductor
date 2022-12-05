@@ -67,6 +67,11 @@ class Configuration implements ArrayAccess {
 		}
 
 		foreach ($values as $name => $value) {
+			if (!is_string($name)) {
+				// skip non-associative array indexes
+				continue;
+			}
+
 			if (str_contains($name, '.')) {
 				// name contains a period, ignore, invalid for our purposes
 				continue;
